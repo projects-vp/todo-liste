@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aufgabenliste</title>
+  </head>
+  <body>
+    <section>
+      <h1>Meine ToDos</h1>
+      <div class="eintrag">
+        <input type="text" name="todo" id="aufgabe" placeholder="neues ToDo" />
+        <button id="btn-add">+</button>
+      </div>
+
+      <ul id="todo-list"></ul>
+      <button class="hide" id="liste-entf">Liste löschen</button>
+    </section>
+
+    <style>
+      .hide {
+        display: none;
+      }
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #40bb3c91;
+        padding: 50px 0px;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      section {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 15px;
+        margin: 0 20px;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 0px;
+        padding-bottom: 10px;
+      }
+
+      input {
+        height: 30px;
+        border: 0;
+        border-bottom: 2px solid #40bb3c;
+        padding: 5px 0px;
+        width: 100%;
+      }
+      input,
+      input::placeholder {
+        font-size: 16px;
+      }
+      input:focus-visible {
+        outline: none;
+      }
+      button#btn-add {
+        background-color: #40bb3c;
+        color: #fff;
+        border: 0;
+        padding: 4px 15px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 20px;
+      }
+      .eintrag {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        justify-content: space-between;
+      }
+      #todo-list {
+        line-height: 20px;
+      }
+      #todo-list li {
+        border-bottom: 1px solid #d6e6d5;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+      #todo-list li p {
+        padding-right: 20px;
+      }
+      #todo-list li button {
+        background-color: #40bb3c52;
+        color: #fff;
+        border: 0;
+        cursor: pointer;
+        height: 30px;
+        width: 30px;
+        border-radius: 30px;
+        font-size: 18px;
+      }
+      #liste-entf {
+        background: transparent;
+        border: 0;
+        color: #40bb3c;
+        font-weight: 800;
+        cursor: pointer;
+        padding: 0;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        let todos = JSON.parse(localStorage.getItem("aufgaben")) || [];
+        const td_liste = document.getElementById("todo-list");
+        const input = document.getElementById("aufgabe");
+        const btn = document.getElementById("btn-add");
+        const btnDelete = document.getElementById("liste-entf");
+
+        // ToDo Liste vorbereiten
+        function renderTodoList() {
+          td_liste.innerHTML = "";
+          todos.forEach((eintrag, index) => {
+            const li = document.createElement("li");
+            const text = document.createElement("p");
+            text.textContent = eintrag;
+            td_liste.append(li);
+            li.append(text);
+
+            const eintragWeg = document.createElement("button");
+            eintragWeg.textContent = "✓";
+            li.appendChild(eintragWeg);
+
+            // Entfernen Button Klick
+            eintragWeg.addEventListener("click", () => {
+              //Eintrag aus Array entfernen
+              todos.splice(index, 1);
+
+              //Array aktualisieren
+              localStorage.setItem("aufgaben", JSON.stringify(todos));
+
+              // Liste neu rendern -> Indizes stimmen wieder
+              renderTodoList();
+            });
+          });
+        }
+        //Todo Liste rendern
+        renderTodoList();
+
+        //"Liste löschen" Link anzeigen
+        if (todos.length > 0) {
+          btnDelete.classList.remove("hide");
+        }
+        //Neue Aufgabe hinzufügen
+        function addTask() {
+          const aufgabeText = input.value.trim();
+
+          if (aufgabeText !== "") {
+            todos.push(aufgabeText);
+            localStorage.setItem("aufgaben", JSON.stringify(todos));
+
+            input.value = "";
+            btnDelete.classList.remove("hide");
+          }
+          renderTodoList();
+        }
+
+        //neue Aufgabe bei Klick ergänzen
+        btn.addEventListener("click", addTask);
+        // neue Aufgabe mit Entertaste ergänzen
+        input.addEventListener("keydown", (x) => {
+          if (x.key === "Enter") {
+            addTask();
+          }
+        });
+
+        //ganze Liste entfernen
+        btnDelete.addEventListener("click", () => {
+          todos = [];
+          localStorage.removeItem("aufgaben");
+          td_liste.innerHTML = "";
+          btnDelete.classList.add("hide");
+        });
+      });
+    </script>
+  </body>
+</html>
