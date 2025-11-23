@@ -4,19 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aufgabenliste</title>
-  </head>
-  <body>
-    <section>
-      <h1>Meine ToDos</h1>
-      <div class="eintrag">
-        <input type="text" name="todo" id="aufgabe" placeholder="neues ToDo" />
-        <button id="btn-add">+</button>
-      </div>
-
-      <ul id="todo-list"></ul>
-      <button class="hide" id="liste-entf">Liste löschen</button>
-    </section>
-
     <style>
       .hide {
         display: none;
@@ -109,6 +96,18 @@
         padding: 0;
       }
     </style>
+  </head>
+  <body>
+    <section>
+      <h1>Meine ToDos</h1>
+      <div class="eintrag">
+        <input type="text" name="todo" id="aufgabe" placeholder="neues ToDo" />
+        <button id="btn-add">+</button>
+      </div>
+
+      <ul id="todo-list"></ul>
+      <button class="hide" id="liste-entf">Liste löschen</button>
+    </section>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         let todos = JSON.parse(localStorage.getItem("aufgaben")) || [];
@@ -185,3 +184,4 @@
     </script>
   </body>
 </html>
+
